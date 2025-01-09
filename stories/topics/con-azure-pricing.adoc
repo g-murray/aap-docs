@@ -8,5 +8,5 @@
 IMPORTANT: As of December 16, 2024, Microsoft has adjusted the API, quotas, and limits of Azure Kubernetes Service (AKS) cluster tiers.
 {AAPonAzureNameShort} currently uses many API calls as part of the {PlatformNameShort} architecture regarding Kube APIs. 
 All {AAPonAzureNameShort} deployments will move from the Azure Kubernetes Service (AKS) *Free tier* to the *Standard tier* as part of infrastructure changes when upgrading to {PlatformNameShort} 2.5 in order to align the management requirements of the offering to the proper Azure solution. 
-This change will change the Azure infrastructure costs to increase as the new infrastructure is added to the offering.
+This change will increase the Azure infrastructure costs as the new infrastructure is added to the offering.
 ====
