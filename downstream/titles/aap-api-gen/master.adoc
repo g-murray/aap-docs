@@ -1,0 +1,18 @@
+:imagesdir: images
+:numbered:
+:toclevels: 1
+:context: app-api-doc
+
+:experimental:
+
+include::attributes/attributes.adoc[]
+
+
+// Book Title
+= Red Hat Ansible Automation Platform API Specification
+
+Placeholder for intro
+
+include::{Boilerplate}[]
+
+include::platform/assembly-aap-api-gen.adoc[leveloffset=+1]
