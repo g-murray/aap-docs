@@ -14,6 +14,16 @@ Use this information when planning your {PlatformName} installations and designi
 * Obtain root access either through the `sudo` command, or through privilege escalation. 
 ** De-escalate privileges from root to users such as: AWX, PostgreSQL, {EDAName}, or Pulp.
 * Configured an NTP client on all nodes.
++
+Clock synchronization is required for secure communication between {PlatformNameShort} components.
+If system clocks are not synchronized, authentication between the {Gateway} and backend services such as {ControllerName}, {HubName}, and {EDAcontroller} can fail.
+For more information about configuring NTP as a security control, see link:{URLHardening}/index#ref-ntp_hardening-aap[NTP] in _{TitleHardening}_.
++
+[NOTE]
+====
+In disconnected environments that cannot reach external NTP servers, configure an internal NTP source to maintain clock accuracy across all {PlatformNameShort} nodes.
+For more information, see link:{BaseURL}/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings[Configuring time synchronization] in the {RHEL} documentation.
+====
 
 ifdef::aap-plan[]
 include::platform/ref-RPM-system-requirements.adoc[leveloffset=+1]

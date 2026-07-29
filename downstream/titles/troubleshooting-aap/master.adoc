@@ -28,6 +28,8 @@ include::troubleshooting-aap/assembly-troubleshoot-jobs.adoc[leveloffset=+1]
 
 include::troubleshooting-aap/assembly-troubleshoot-networking.adoc[leveloffset=+1]
 
+include::troubleshooting-aap/proc-troubleshoot-clock-drift-auth-failures.adoc[leveloffset=+1]
+
 include::troubleshooting-aap/ref-troubleshoot-playbooks.adoc[leveloffset=+1]
 
 include::troubleshooting-aap/assembly-troubleshoot-upgrade.adoc[leveloffset=+1]

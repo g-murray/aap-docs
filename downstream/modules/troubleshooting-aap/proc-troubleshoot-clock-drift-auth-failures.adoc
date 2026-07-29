@@ -1,0 +1,101 @@
+:_mod-docs-content-type: PROCEDURE
+
+[id="troubleshoot-clock-drift-auth-failures_{context}"]
+
+= Resolve authentication failures caused by clock drift
+
+[role="_abstract"]
+Authentication between {PlatformNameShort} components can fail when system clocks are not synchronized across platform nodes.
+The {Gateway} validates timestamps on inter-service authentication headers, and clock drift between nodes causes these headers to be rejected.
+
+If clock drift is causing authentication failures, you can diagnose the issue and restore correct operation by synchronizing the clocks on your platform nodes.
+
+[discrete]
+=== Symptoms
+
+* Users receive 401 (Unauthorized) errors when accessing backend services such as {ControllerName}, {HubName}, or {EDAcontroller} through the {Gateway}.
+* Authentication failures are intermittent and can correlate with specific times of day or periods of high load.
+* Service logs contain warning messages with the text `was too old`, for example:
++
+[source,terminal]
+----
+Timestamp <timestamp_value> was too old by <elapsed_time>ms to be valid
+----
+
+.Prerequisites
+
+* You have administrative (root) access to the {PlatformNameShort} nodes.
+* The `chrony` NTP client is installed on all {PlatformNameShort} nodes.
+
+.Procedure
+
+. Verify that NTP synchronization is active on each {PlatformNameShort} node.
++
+Run the following command to confirm that the system clock is synchronized:
++
+[source,terminal]
+----
+$ timedatectl
+----
++
+In the output, verify that `NTP service` is `active` and `System clock synchronized` is `yes`.
+
+. Check the clock offset on each {PlatformNameShort} node.
++
+Run the following command to view the current time offset from the NTP source:
++
+[source,terminal]
+----
+$ chronyc tracking
+----
++
+In the output, check the `System time` line.
+An offset greater than a few hundred milliseconds can cause authentication header validation to fail.
+
+. Verify that the NTP sources are reachable and accurate on each {PlatformNameShort} node.
++
+Run the following command to view detailed NTP source information:
++
+[source,terminal]
+----
+$ chronyc sources -v
+----
++
+Verify that at least one NTP source is reachable and that the source is marked with `*` (selected) or `+` (combined).
+
+. If NTP is not active or the clock offset is large, correct the NTP configuration on the affected nodes.
++
+For information about configuring the chrony NTP service, see link:{BaseURL}/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings[Configuring time synchronization] in the {RHEL} documentation.
+
+. After correcting NTP, force an immediate clock synchronization:
++
+[source,terminal]
+----
+$ sudo chronyc makestep
+----
+
+. If authentication failures persist after clock synchronization is corrected, check whether the `trusted_header_timeout` setting needs adjustment.
++
+The default `trusted_header_timeout` value is `1000` milliseconds.
+In environments with high network latency between {PlatformNameShort} nodes, legitimate requests might exceed this threshold.
+Increase the value only if clock synchronization is correct and latency is the cause.
++
+[WARNING]
+====
+Increasing the `trusted_header_timeout` value widens the window during which a captured authentication header could be replayed.
+Keep this value as low as your environment allows.
+====
++
+For more information about the `trusted_header_timeout` setting, see link:{URLCentralAuth}/index#ref-gw-trusted-header-timeout[Trusted header timeout for inter-service authentication] in _{TitleCentralAuth}_.
+
+.Verification
+
+* After correcting NTP configuration, run `chronyc tracking` on each node and verify that the `System time` offset is less than 100 milliseconds.
+* Verify that 401 errors are no longer appearing in the service logs.
+* Confirm that users can access backend services through the {Gateway} without authentication failures.
+
+.Additional resources
+
+* For information about the NTP prerequisite for {PlatformNameShort} installation, see link:{URLPlanningGuide}/index#platform-system-requirements[System requirements] in _{TitlePlanningGuide}_.
+* For information about configuring the chrony NTP service, see link:{BaseURL}/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/configuring-time-synchronization_configuring-basic-system-settings[Configuring time synchronization] in the {RHEL} documentation.
+* For information about NTP as a security control, see link:{URLHardening}/index#ref-ntp_hardening-aap[NTP] in _{TitleHardening}_.

@@ -1,0 +1,57 @@
+:_mod-docs-content-type: REFERENCE
+
+// Module included in the following assemblies:
+// downstream/assemblies/platform/assembly-gw-settings.adoc
+
+[id="ref-gw-trusted-header-timeout"]
+
+= Trusted header timeout for inter-service authentication
+
+[role="_abstract"]
+The `trusted_header_timeout` setting controls the maximum age, in milliseconds, that {PlatformNameShort} allows for inter-service authentication headers between the {Gateway} and backend services such as {ControllerName}, {HubName}, and {EDAcontroller}.
+Headers older than this value are rejected to protect against replay attacks.
+
+.`trusted_header_timeout` setting
+[cols="1,3", options="header"]
+|===
+|Property
+|Value
+
+|Setting name
+|`trusted_header_timeout`
+
+|Default value
+|`1000`
+
+|Unit
+|Milliseconds
+
+|Purpose
+|Specifies the maximum allowed age for authentication headers exchanged between {PlatformNameShort} services.
+Headers older than this threshold are rejected.
+|===
+
+[discrete]
+== When to adjust this setting
+
+Most production environments do not need to change this setting.
+Consider increasing the value if your environment has high network latency between {PlatformNameShort} nodes and legitimate inter-service requests are being rejected because authentication headers exceed the timeout threshold.
+
+You can identify rejected requests by inspecting service logs for warning messages that contain the text `was too old`.
+For example:
+
+[source,terminal]
+----
+Timestamp <timestamp_value> was too old by <elapsed_time>ms to be valid-alter trusted_header_timeout if needed
+----
+
+[WARNING]
+====
+Increasing the `trusted_header_timeout` value widens the window during which a captured authentication header could be replayed.
+Keep this value as low as your environment allows.
+====
+
+.Additional resources
+
+* For information about configuring other {Gateway} timeout settings, see xref:proc-settings-gw-other-options[Configuring additional platform options].
+* For information about troubleshooting authentication failures caused by clock drift, see link:{URLTroubleshootingAAP}/index#troubleshoot-clock-drift-auth-failures[Resolve authentication failures caused by clock drift] in _{TitleTroubleshootingAAP}_.
